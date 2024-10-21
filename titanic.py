@@ -9,4 +9,6 @@ titanic_data = pd.read_csv('csv/titanic.csv')
 titanic_df = pd.DataFrame(titanic_data)
 
 #先頭５行を表示
-print(titanic_df.head().to_markdown(index=False, numalign="left", stralign="left"))
+# print(titanic_df.head().to_markdown(index=False, numalign="left", stralign="left"))
+
+#
