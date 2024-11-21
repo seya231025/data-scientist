@@ -13,5 +13,11 @@ readmeを見ていただきありがとうございます。
 今回私はGoogle Gemini Advanceを使用し、問題を作成してもらいました。その作成してもらった問題を私自身の力で分析していきたいと思っています。
 ただまだ知識・プログラム力が未熟なので、データサイエンスやプログラムを独学していきます。
 勉強したら、GitHubに更新しようと思います。
+
+仮想環境起動　venv\Scripts\activate
+パッケージインストール　pip install -r requirements.txt
+定期更新　pip freeze > requirements.txt
+
+
 開始日：2024/10/19
 終了日：---
