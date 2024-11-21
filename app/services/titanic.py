@@ -12,42 +12,49 @@
 * embarked: 出港地
 """
 
-# import
 import pandas as pd
-import numpy as np
+import os
 
-# データの読み込み
 def analyze_titanic_data(titanic_data: str):
-    titanic_data = pd.read_csv('csv/titanic.csv')
+    # 現在のスクリプト（titanic.py）のディレクトリを基準にパスを解決
+    base_dir = os.path.dirname(__file__)
+    full_path = os.path.join(base_dir, "..", "csv", titanic_data)  # app/csv/titanic.csvを指す
 
-# DataFrameの作成
-    titanic_df = pd.DataFrame(titanic_data)
+    # ファイルの存在確認
+    if not os.path.exists(full_path):
+        return {"error": f"File not found at {full_path}"}
 
-# 生存者の数
+    # データの読み込み
+    try:
+        titanic_df = pd.read_csv(full_path)
+    except Exception as e:
+        return {"error": f"Failed to load data: {e}"}
+
+    # 統計情報の計算
     survived_count = (titanic_df["survived"] == 1).sum()
-# 死亡者数
     nosurvived_count = (titanic_df["survived"] == 0).sum()
 
-# 客室クラスごとの人数
-    first_class_or_higher_count = (titanic_df["pclass"] == 1).sum()
-    second_class_or_higher_count = (titanic_df["pclass"] == 2).sum()
-    three_class_or_higher_count = (titanic_df["pclass"] == 3).sum()
+    # 客室クラスごとの生存者数
+    class_survivors = {
+        "1st_class": (titanic_df["pclass"] == 1).sum(),
+        "2nd_class": (titanic_df["pclass"] == 2).sum(),
+        "3rd_class": (titanic_df["pclass"] == 3).sum(),
+    }
+    class_survivor_counts = {
+        "1st_class_survived": titanic_df[(titanic_df["pclass"] == 1) & (titanic_df["survived"] == 1)].shape[0],
+        "2nd_class_survived": titanic_df[(titanic_df["pclass"] == 2) & (titanic_df["survived"] == 1)].shape[0],
+        "3rd_class_survived": titanic_df[(titanic_df["pclass"] == 3) & (titanic_df["survived"] == 1)].shape[0],
+    }
 
-    print(f"Survived : {survived_count}, Deaths : {nosurvived_count}")
+    # 整合性チェック
+    total_survived_by_class = sum(class_survivor_counts.values())
+    is_data_consistent = total_survived_by_class == survived_count
 
-# 客室クラスごとの生存者数
-    data01 = titanic_df[(titanic_df["pclass"] == 1) & (titanic_df["survived"] == 1)].shape[0]
-    data02 = titanic_df[(titanic_df["pclass"] == 2) & (titanic_df["survived"] == 1)].shape[0]
-    data03 = titanic_df[(titanic_df["pclass"] == 3) & (titanic_df["survived"] == 1)].shape[0]
-
-    survived_count_pcclass = data01 + data02 + data03
-
-    print(f"1st Class Survivors: {data01}")
-    print(f"2nd Class Survivors: {data02}")
-    print(f"3rd Class Survivors: {data03}")
-
-    if survived_count_pcclass != survived_count:
-        print('This count is false')
-    else:
-        print('This count is True')
-
+    # 結果を辞書形式で返す
+    return {
+        "survived_count": survived_count,
+        "nosurvived_count": nosurvived_count,
+        "class_counts": class_survivors,
+        "class_survivor_counts": class_survivor_counts,
+        "data_consistency": is_data_consistent,
+    }
