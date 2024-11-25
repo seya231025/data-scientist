@@ -1,24 +1,98 @@
-body {
+/* メニューバー */
+header nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: #333;
+    text-align: center;
+  }
+  
+  header nav ul li {
+    display: inline;
+    margin: 0 10px;
+  }
+  
+  header nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: inline-block;
+    background-color: #444;
+    border-radius: 4px;
+  }
+  
+  header nav ul li a:hover {
+    background-color: #888;
+  }
+  
+  /* コンテンツエリア */
+  .container {
+    padding: 20px;
     font-family: Arial, sans-serif;
-    margin: 20px;
-}
-
-h1 {
-    color: #4CAF50;
-}
-
-form {
+  }
+  
+  .summary, .class-analysis {
+    margin-bottom: 30px;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  span {
+    font-weight: bold;
+    color: #0066cc;
+  }
+  
+  .class {
     margin-bottom: 20px;
-}
-
-button {
+  }
+  
+  button {
+    padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
     border: none;
     cursor: pointer;
-}
-
-button:hover {
+    border-radius: 4px;
+  }
+  
+  button:hover {
     background-color: #45a049;
-}
+  }
+  
+  .detail {
+    display: none;
+    margin-top: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  /* 隠しボタンのスタイル */
+  #hiddenButton {
+    background-color: #FFC0CB; /* パステルピンク */
+    color: #FFFFFF; /* 白 */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px; /* 角丸 */
+    font-family: 'Arial', sans-serif;
+    position: fixed; /* 画面に固定 */
+    bottom: 20px; /* 画面下部に配置 */
+    right: 20px; /* 画面右部に配置 */
+    z-index: 100; /* 他の要素より上に表示 */
+  }
+  
+  /* ポップアップのスタイル */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 100; /* 他の要素より上に表示 */
+  }

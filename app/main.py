@@ -32,3 +32,19 @@ async def list_routes():
     """
     routes = [{"path": route.path, "name": route.name} for route in app.router.routes]
     return {"routes": routes}
+
+@app.get("/boston", response_class=HTMLResponse)
+async def boston(request: Request):
+    return templates.TemplateResponse("boston.html", {"request": request})
+
+@app.get("/customer", response_class=HTMLResponse)
+async def customer(request: Request):
+    return templates.TemplateResponse("customer.html", {"request": request})
+
+@app.get("/iris", response_class=HTMLResponse)
+async def iris(request: Request):
+    return templates.TemplateResponse("iris.html", {"request": request})
+
+@app.get("/store", response_class=HTMLResponse)
+async def store(request: Request):
+    return templates.TemplateResponse("store.html", {"request": request})
