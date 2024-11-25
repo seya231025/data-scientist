@@ -6,12 +6,6 @@
 </head>
 <body>
     {% if result['summary'] %}
-    <p>生存者数: {{ result['summary']['survived_count'] }}</p>
-    {% else %}
-    <p>生存者数情報がありません。</p>
-    {% endif %}
-
-
 
     <h1>タイタニック号 乗客データ分析結果</h1>
 
@@ -32,6 +26,10 @@
     <h3>3等客室</h3>
     <p>総人数: {{ result['class_analysis']['total_counts']['3rd_class'] }}</p>
     <p>生存者数: {{ result['class_analysis']['survived_counts']['3rd_class_survived'] }}</p>
+    {% else %}
 
+    <p>生存者数情報がありません。</p>
+    
+    {% endif %}
 </body>
 </html>

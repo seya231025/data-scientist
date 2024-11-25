@@ -84,4 +84,4 @@ def analyze_titanic_data(titanic_data: str = "titanic.csv"):
     # 結果のデバッグ出力
     print(result)
 
-    return result 
+    return result
