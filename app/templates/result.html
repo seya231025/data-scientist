@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>分析結果</title>
+</head>
+<body>
+    {% if result['summary'] %}
+    <p>生存者数: {{ result['summary']['survived_count'] }}</p>
+    {% else %}
+    <p>生存者数情報がありません。</p>
+    {% endif %}
+
+
+
+    <h1>タイタニック号 乗客データ分析結果</h1>
+
+    <h2>生存者数と非生存者数</h2>
+    <p>生存者数: {{ result['summary']['survived_count'] }}</p>
+    <p>非生存者数: {{ result['summary']['nosurvived_count'] }}</p>
+    <p>データ整合性: {{ result['summary']['data_consistency'] }}</p>
+
+    <h2>クラスごとの統計</h2>
+    <h3>1等客室</h3>
+    <p>総人数: {{ result['class_analysis']['total_counts']['1st_class'] }}</p>
+    <p>生存者数: {{ result['class_analysis']['survived_counts']['1st_class_survived'] }}</p>
+
+    <h3>2等客室</h3>
+    <p>総人数: {{ result['class_analysis']['total_counts']['2nd_class'] }}</p>
+    <p>生存者数: {{ result['class_analysis']['survived_counts']['2nd_class_survived'] }}</p>
+
+    <h3>3等客室</h3>
+    <p>総人数: {{ result['class_analysis']['total_counts']['3rd_class'] }}</p>
+    <p>生存者数: {{ result['class_analysis']['survived_counts']['3rd_class_survived'] }}</p>
+
+</body>
+</html>

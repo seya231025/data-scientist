@@ -67,18 +67,21 @@ def analyze_titanic_data(titanic_data: str = "titanic.csv"):
     if not is_data_consistent:
         logger.warning("Data inconsistency detected: Class survivor counts do not match total survivors.")
 
-    # 結果をログに記録
     logger.info("Analysis complete.")
 
-    # 結果を辞書形式で返す
-    return {
-        "summary": {
-            "survived_count": survived_count,
-            "nosurvived_count": nosurvived_count,
-            "data_consistency": is_data_consistent,
+    result = {
+        'summary': {
+            'survived_count': survived_count,
+            'nosurvived_count': nosurvived_count,
+            'data_consistency': is_data_consistent,
         },
-        "class_analysis": {
-            "total_counts": class_survivors,
-            "survived_counts": class_survivor_counts,
+        'class_analysis': {
+            'total_counts': class_survivors,
+            'survived_counts': class_survivor_counts,
         },
     }
+
+    # 結果のデバッグ出力
+    print(result)
+
+    return result 

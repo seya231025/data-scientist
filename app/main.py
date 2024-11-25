@@ -1,33 +1,52 @@
 from fastapi import FastAPI, UploadFile, File
-from app.services.titanic import analyze_titanic_data
-from app.api.endpoints import router  # エンドポイントのルーターをインポート
-
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi import Request
 import os
+from app.services.titanic import analyze_titanic_data
+
+# テンプレートディレクトリの設定
+templates = Jinja2Templates(directory="app/templates")
 
 app = FastAPI()
 
-app.include_router(router)
+# 静的ファイル（CSS, JSなど）の設定
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-@app.get("/")
-async def root():
-    return {"message": "FastAPI is running!"}
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    """
+    ホームページにHTMLフォームを表示するルート。
+    """
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/routes")
 async def list_routes():
+    """
+    アプリケーション内のすべてのルートをリスト表示するルート。
+    """
     routes = [{"path": route.path, "name": route.name} for route in app.router.routes]
     return {"routes": routes}
 
-
 @app.post("/analyze_titanic_data")
-async def get_titanic_analysis(file: UploadFile = File(...)):
-    # アップロードされたファイルを一時ファイルとして保存
-    with open(f"temp/{file.filename}", "wb") as buffer:
+async def analyze_titanic_data_view(request: Request, file: UploadFile = File(...)):
+    """
+    アップロードされたタイタニックのデータCSVを解析し、その結果をHTMLで表示するルート。
+    """
+    # アップロードされたファイルを一時保存
+    file_path = f"temp/{file.filename}"
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)  # tempフォルダがない場合は作成
+    with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
-    # 一時ファイルのパスを関数に渡す
-    result = analyze_titanic_data(f"temp/{file.filename}")
+    # アップロードされたファイルのパスを使用して分析
+    result = analyze_titanic_data(file_path)
 
-    # 一時ファイルを削除
-    os.remove(f"temp/{file.filename}")
+    # 一時ファイルの削除
+    os.remove(file_path)
 
-    return result
+    print(result)
+
+    # 結果をHTMLで表示
+    return templates.TemplateResponse("result.html", {"request": request, "result": result})
