@@ -1,60 +1,84 @@
-# 目標設定：タイタニック号の乗客データ（データ収集先：titanic.csv）があり、乗客の年齢、性別、客室クラスなどの情報から、生存者を予測するモデルを作成する。
-
-"""
-* passenger_id: 乗客ID
-* survived: 生存フラグ (1: 生存, 0: 死亡)
-* pclass: 客室クラス
-* sex: 性別
-* age: 年齢
-* sibsp: タイタニック号に同乗している兄弟/配偶者の数
-* parch: タイタニック号に同乗している親/子供の数
-* fare: 料金
-* embarked: 出港地
-"""
-
 import pandas as pd
 import os
+import logging
 
-def analyze_titanic_data(titanic_data: str):
-    # 現在のスクリプト（titanic.py）のディレクトリを基準にパスを解決
+# ロギング設定：INFOレベル以上のログを出力
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def analyze_titanic_data(titanic_data: str = "titanic.csv"):
+    """
+    タイタニック号の乗客データを分析し、生存者数や客室クラスごとの統計を計算します。
+
+    Args:
+        titanic_data (str): 分析するCSVファイル名またはパス。デフォルトは'titanic.csv'。
+
+    Returns:
+        dict: 分析結果を含む辞書形式のデータ。
+    """
+    logger.info(f"Starting analysis for file: {titanic_data}")
+    
+    # 現在のスクリプトのディレクトリを基準にCSVファイルのフルパスを解決
     base_dir = os.path.dirname(__file__)
-    full_path = os.path.join(base_dir, "..", "csv", titanic_data)  # app/csv/titanic.csvを指す
+    full_path = os.path.join(base_dir, "..", "csv", titanic_data)
 
     # ファイルの存在確認
     if not os.path.exists(full_path):
+        logger.error(f"File not found at {full_path}")
         return {"error": f"File not found at {full_path}"}
 
-    # データの読み込み
+    # CSVデータを読み込む
     try:
         titanic_df = pd.read_csv(full_path)
+        logger.info("CSV file successfully loaded.")
     except Exception as e:
-        return {"error": f"Failed to load data: {e}"}
+        logger.error(f"Failed to load data: {str(e)}")
+        return {"error": f"Failed to load data: {str(e)}"}
 
-    # 統計情報の計算
+    # 必要な列が存在するか確認
+    required_columns = ["survived", "pclass"]  # 必須列を指定
+    missing_columns = [col for col in required_columns if col not in titanic_df.columns]
+    if missing_columns:
+        logger.error(f"Missing required columns: {missing_columns}")
+        return {"error": f"Missing required columns: {missing_columns}"}
+
+    # 生存者数と非生存者数を計算
     survived_count = (titanic_df["survived"] == 1).sum()
     nosurvived_count = (titanic_df["survived"] == 0).sum()
+    logger.info(f"Survived: {survived_count}, Not Survived: {nosurvived_count}")
 
-    # 客室クラスごとの生存者数
+    # 客室クラスごとの総数を計算
     class_survivors = {
         "1st_class": (titanic_df["pclass"] == 1).sum(),
         "2nd_class": (titanic_df["pclass"] == 2).sum(),
         "3rd_class": (titanic_df["pclass"] == 3).sum(),
     }
+
+    # 客室クラスごとの生存者数を計算
     class_survivor_counts = {
         "1st_class_survived": titanic_df[(titanic_df["pclass"] == 1) & (titanic_df["survived"] == 1)].shape[0],
         "2nd_class_survived": titanic_df[(titanic_df["pclass"] == 2) & (titanic_df["survived"] == 1)].shape[0],
         "3rd_class_survived": titanic_df[(titanic_df["pclass"] == 3) & (titanic_df["survived"] == 1)].shape[0],
     }
 
-    # 整合性チェック
+    # データ整合性チェック：各クラスの生存者数合計が全体の生存者数と一致するか
     total_survived_by_class = sum(class_survivor_counts.values())
     is_data_consistent = total_survived_by_class == survived_count
+    if not is_data_consistent:
+        logger.warning("Data inconsistency detected: Class survivor counts do not match total survivors.")
+
+    # 結果をログに記録
+    logger.info("Analysis complete.")
 
     # 結果を辞書形式で返す
     return {
-        "survived_count": survived_count,
-        "nosurvived_count": nosurvived_count,
-        "class_counts": class_survivors,
-        "class_survivor_counts": class_survivor_counts,
-        "data_consistency": is_data_consistent,
+        "summary": {
+            "survived_count": survived_count,
+            "nosurvived_count": nosurvived_count,
+            "data_consistency": is_data_consistent,
+        },
+        "class_analysis": {
+            "total_counts": class_survivors,
+            "survived_counts": class_survivor_counts,
+        },
     }
