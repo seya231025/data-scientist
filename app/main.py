@@ -17,9 +17,13 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """
-    ホームページにHTMLフォームを表示するルート。
+    ホームページにタイタニック号データの分析結果を表示するルート。
     """
-    return templates.TemplateResponse("index.html", {"request": request})
+    # タイタニックデータの解析を実行
+    result = analyze_titanic_data("csv/titanic.csv")
+
+    # 結果をHTMLで表示
+    return templates.TemplateResponse("result.html", {"request": request, "result": result})
 
 @app.get("/routes")
 async def list_routes():
@@ -28,25 +32,3 @@ async def list_routes():
     """
     routes = [{"path": route.path, "name": route.name} for route in app.router.routes]
     return {"routes": routes}
-
-@app.post("/analyze_titanic_data")
-async def analyze_titanic_data_view(request: Request, file: UploadFile = File(...)):
-    """
-    アップロードされたタイタニックのデータCSVを解析し、その結果をHTMLで表示するルート。
-    """
-    # アップロードされたファイルを一時保存
-    file_path = f"temp/{file.filename}"
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)  # tempフォルダがない場合は作成
-    with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
-
-    # アップロードされたファイルのパスを使用して分析
-    result = analyze_titanic_data(file_path)
-
-    # 一時ファイルの削除
-    os.remove(file_path)
-
-    print(result)
-
-    # 結果をHTMLで表示
-    return templates.TemplateResponse("result.html", {"request": request, "result": result})

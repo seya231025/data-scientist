@@ -9,18 +9,12 @@ logger = logging.getLogger(__name__)
 def analyze_titanic_data(titanic_data: str = "titanic.csv"):
     """
     タイタニック号の乗客データを分析し、生存者数や客室クラスごとの統計を計算します。
-
-    Args:
-        titanic_data (str): 分析するCSVファイル名またはパス。デフォルトは'titanic.csv'。
-
-    Returns:
-        dict: 分析結果を含む辞書形式のデータ。
     """
     logger.info(f"Starting analysis for file: {titanic_data}")
-    
-    # 現在のスクリプトのディレクトリを基準にCSVファイルのフルパスを解決
+
+    # プロジェクトのルートパスを取得し、CSVファイルのパスを解決
     base_dir = os.path.dirname(__file__)
-    full_path = os.path.join(base_dir, "..", "csv", titanic_data)
+    full_path = os.path.join(base_dir, "..", titanic_data)  # プロジェクトルートに直接CSVがあると仮定
 
     # ファイルの存在確認
     if not os.path.exists(full_path):
