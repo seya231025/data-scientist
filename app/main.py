@@ -48,3 +48,7 @@ async def iris(request: Request):
 @app.get("/store", response_class=HTMLResponse)
 async def store(request: Request):
     return templates.TemplateResponse("store.html", {"request": request})
+
+@app.get("/introduction", response_class=HTMLResponse)
+async def introduction(request: Request):
+    return templates.TemplateResponse("introduction.html", {"request": request})

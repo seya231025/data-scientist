@@ -1,6 +1,9 @@
 import pandas as pd
 import os
 import logging
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 # ロギング設定：INFOレベル以上のログを出力
 logging.basicConfig(level=logging.INFO)
@@ -62,6 +65,8 @@ def analyze_titanic_data(titanic_data: str = "titanic.csv"):
         logger.warning("Data inconsistency detected: Class survivor counts do not match total survivors.")
 
     logger.info("Analysis complete.")
+
+    #生存者データによるグラフ表示
 
     result = {
         'summary': {
