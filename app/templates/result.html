@@ -3,81 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>タイタニック号 乗客データ分析結果</title>
+  <title>タイタニック号 乗客データ分析</title>
   <link rel="stylesheet" href="/static/styles.css">
   <script src="/static/scripts.js" defer></script>
 </head>
 <body>
   <header>
     <nav>
-      <ul>
+      <ul class="nav-links">
         <li><a href="/">Home</a></li>
         <li><a href="/boston">Boston</a></li>
         <li><a href="/customer">Customer</a></li>
         <li><a href="/iris">Iris</a></li>
         <li><a href="/store">Store</a></li>
         <li><a href="/introduction">Introduction</a></li>
-
       </ul>
     </nav>
   </header>
 
-  <div class="container">
+  <main class="container">
     <h1>タイタニック号 乗客データ分析結果</h1>
+    <section class="summary">
+      <div class="card">
+        <h2>生存者数と非生存者数</h2>
+        <p>生存者数: <span>{{ result['summary']['survived_count'] }}</span></p>
+        <p>非生存者数: <span>{{ result['summary']['nosurvived_count'] }}</span></p>
+        <p>データ整合性: <span>{{ result['summary']['data_consistency'] }}</span></p>
+      </div>
+    </section>
 
-    <div class="summary">
-      <h2>生存者数と非生存者数</h2>
-      <p>生存者数: <span>{{ result['summary']['survived_count'] }}</span></p>
-      <p>非生存者数: <span>{{ result['summary']['nosurvived_count'] }}</span></p>
-      <p>データ整合性: <span>{{ result['summary']['data_consistency'] }}</span></p>
-    </div>
-
-    <div class="class-analysis">
+    <section class="class-analysis">
       <h2>クラスごとの統計</h2>
-
-      <div class="class">
-        <h3>1等客室</h3>
-        <p>総人数: <span>{{ result['class_analysis']['total_counts']['1st_class'] }}</span></p>
-        <p>生存者数: <span>{{ result['class_analysis']['survived_counts']['1st_class_survived'] }}</span></p>
-        <button onclick="toggleDetail('1st_class')">詳細</button>
-        <div class="detail" id="1st_class">
-          <p>1等客室の詳細情報...</p>
+      <div class="grid">
+        {% for class_name, class_data in result['class_analysis']['total_counts'].items() %}
+        <div class="card">
+          <h3>{{ class_name }}等客室</h3>
+          <p>総人数: <span>{{ class_data }}</span></p>
+          <p>生存者数: <span>{{ result['class_analysis']['survived_counts'][class_name+'_survived'] }}</span></p>
+          <button onclick="toggleDetail('{{ class_name }}')">詳細</button>
+          <div class="detail" id="{{ class_name }}" style="display:none;">
+            <p>{{ class_name }}等客室の詳細情報...</p>
+          </div>
         </div>
+        {% endfor %}
       </div>
+    </section>
+  </main>
 
-      <div class="class">
-        <h3>2等客室</h3>
-        <p>総人数: <span>{{ result['class_analysis']['total_counts']['2nd_class'] }}</span></p>
-        <p>生存者数: <span>{{ result['class_analysis']['survived_counts']['2nd_class_survived'] }}</span></p>
-        <button onclick="toggleDetail('2nd_class')">詳細</button>
-        <div class="detail" id="2nd_class">
-          <p>2等客室の詳細情報...</p>
-        </div>
-      </div>
-
-      <div class="class">
-        <h3>3等客室</h3>
-        <p>総人数: <span>{{ result['class_analysis']['total_counts']['3rd_class'] }}</span></p>
-        <p>生存者数: <span>{{ result['class_analysis']['survived_counts']['3rd_class_survived'] }}</span></p>
-        <button onclick="toggleDetail('3rd_class')">詳細</button>
-        <div class="detail" id="3rd_class">
-          <p>3等客室の詳細情報...</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button id="hiddenButton" style="display:none;">カウント30開始</button>
-
-  <div id="count30Popup" class="popup" style="display: none;">
-    <h2>カウント30</h2>
-    <p id="turn"></p>
-    <p id="count">1</p>
-    <div>
-      <button onclick="countUp(1)">1</button>
-      <button onclick="countUp(2)">2</button>
-      <button onclick="countUp(3)">3</button>
-    </div>
-  </div>
+  <footer>
+    <p>© 2024 Data Analysis WebApp</p>
+  </footer>
 </body>
 </html>
